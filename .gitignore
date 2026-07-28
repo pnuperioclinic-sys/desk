@@ -2,6 +2,10 @@
 .omc/
 !.omc/skills/
 
+# Vercel
+.vercel/
+.env*
+
 # OS / editor
 Thumbs.db
 desktop.ini
