@@ -3,211 +3,946 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Desk</title>
+<title>닥터배치과 · 데스크 응대 매뉴얼</title>
 <style>
-  :root {
-    --bg: #f7f5f1;
-    --bg-elev: #ffffff;
-    --fg: #1b1a17;
-    --fg-muted: #6b665c;
-    --line: #e2ddd3;
-    --accent: #b4551f;
-    --shadow: 0 1px 2px rgba(27,26,23,.05), 0 12px 32px rgba(27,26,23,.07);
+  :root{
+    --bg:#f5f7f9; --elev:#ffffff; --elev2:#eef2f5;
+    --fg:#15191e; --muted:#5c6b7a; --line:#e1e7ed;
+    --accent:#0f7b6c; --accent-soft:#e4f3f0;
+    --warn:#b4551f; --warn-soft:#fbeee4;
+    --bad:#c0392b; --bad-soft:#fbeae8;
+    --good:#0f7b6c; --good-soft:#e4f3f0;
+    --shadow:0 1px 2px rgba(21,25,30,.04), 0 10px 28px rgba(21,25,30,.06);
+    --radius:14px;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #14130f;
-      --bg-elev: #1d1b17;
-      --fg: #f2efe8;
-      --fg-muted: #a09a8d;
-      --line: #302c25;
-      --accent: #e08a4e;
-      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0e1215; --elev:#161b20; --elev2:#1c2228;
+      --fg:#e9eef2; --muted:#93a1ad; --line:#262e35;
+      --accent:#4fd1b8; --accent-soft:#12312c;
+      --warn:#e59a5f; --warn-soft:#33241a;
+      --bad:#ef7b6d; --bad-soft:#331d1b;
+      --good:#4fd1b8; --good-soft:#12312c;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.35);
     }
   }
 
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard",
-                 "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-    line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:80px; -webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard",
+                "Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    line-height:1.7; -webkit-font-smoothing:antialiased; word-break:keep-all;
+  }
+  a{color:var(--accent);}
+
+  /* ───── header ───── */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb,var(--bg) 90%,transparent);
+    backdrop-filter:saturate(180%) blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar{
+    max-width:1180px; margin:0 auto; padding:0 20px;
+    height:62px; display:flex; align-items:center; gap:16px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:-.02em; white-space:nowrap;}
+  .brand .mark{
+    width:26px; height:26px; border-radius:8px; flex-shrink:0;
+    background:var(--accent); color:#fff; display:grid; place-items:center;
+    font-size:.78rem; font-weight:800;
+  }
+  .brand small{display:block; font-size:.7rem; font-weight:500; color:var(--muted); letter-spacing:0; line-height:1.2;}
+  .search{margin-left:auto; position:relative; flex:0 1 300px;}
+  .search input{
+    width:100%; padding:8px 32px 8px 34px; font:inherit; font-size:.88rem;
+    background:var(--elev); color:var(--fg);
+    border:1px solid var(--line); border-radius:9px; outline:none;
+  }
+  .search input:focus{border-color:var(--accent);}
+  .search .ico{position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:.85rem;}
+  .search .clr{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    border:0; background:none; color:var(--muted); cursor:pointer; font-size:1rem;
+    padding:2px 6px; line-height:1; display:none;
+  }
+  .search.has-q .clr{display:block;}
+
+  /* ───── layout ───── */
+  .shell{max-width:1180px; margin:0 auto; padding:0 20px; display:grid; gap:40px;}
+  @media (min-width:1000px){
+    .shell{grid-template-columns:220px minmax(0,1fr); align-items:start;}
   }
 
-  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+  /* ───── toc ───── */
+  .toc{display:none;}
+  @media (min-width:1000px){
+    .toc{display:block; position:sticky; top:86px; padding:32px 0; font-size:.88rem;}
+  }
+  .toc .label{
+    font-size:.7rem; letter-spacing:.13em; text-transform:uppercase;
+    color:var(--muted); font-weight:700; margin-bottom:12px;
+  }
+  .toc ol{list-style:none; margin:0; padding:0; border-left:2px solid var(--line);}
+  .toc li a{
+    display:flex; gap:9px; padding:7px 0 7px 14px; margin-left:-2px;
+    border-left:2px solid transparent; color:var(--muted); text-decoration:none;
+  }
+  .toc li a:hover{color:var(--fg);}
+  .toc li a.active{color:var(--accent); border-left-color:var(--accent); font-weight:650;}
+  .toc li a .n{font-variant-numeric:tabular-nums; opacity:.6;}
 
-  /* ---- header ---- */
-  header {
-    border-bottom: 1px solid var(--line);
-    position: sticky; top: 0;
-    background: color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter: saturate(180%) blur(12px);
-    z-index: 10;
+  /* ───── hero ───── */
+  .hero{padding:52px 0 8px;}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--accent); font-weight:700; margin:0 0 12px;
   }
-  .bar {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 16px; height: 60px;
-  }
-  .brand {
-    font-weight: 700; letter-spacing: -.02em; font-size: 1.05rem;
-    display: flex; align-items: center; gap: 9px;
-  }
-  .brand .dot {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: var(--accent);
-  }
-  nav { display: flex; gap: 20px; font-size: .9rem; }
-  nav a { color: var(--fg-muted); text-decoration: none; }
-  nav a:hover { color: var(--fg); }
+  h1{font-size:clamp(1.85rem,5vw,2.6rem); line-height:1.2; letter-spacing:-.035em; margin:0 0 14px; font-weight:750;}
+  .lede{color:var(--muted); margin:0 0 28px; max-width:56ch;}
 
-  /* ---- hero ---- */
-  .hero { padding: 88px 0 64px; }
-  .eyebrow {
-    font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--accent); font-weight: 600; margin: 0 0 14px;
+  /* 3:3:3 */
+  .kpi{
+    display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    margin:0 0 12px;
   }
-  h1 {
-    font-size: clamp(2.1rem, 6vw, 3.2rem);
-    line-height: 1.15; letter-spacing: -.035em;
-    margin: 0 0 18px; font-weight: 700;
+  .kpi .k{
+    background:var(--elev); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; box-shadow:var(--shadow); position:relative; overflow:hidden;
   }
-  .lede { font-size: 1.08rem; color: var(--fg-muted); margin: 0 0 32px; max-width: 52ch; }
+  .kpi .k::before{content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--accent);}
+  .kpi .num{
+    font-size:2.4rem; font-weight:800; line-height:1; letter-spacing:-.04em;
+    color:var(--accent); font-variant-numeric:tabular-nums;
+  }
+  .kpi .num span{font-size:.95rem; font-weight:600; margin-left:4px; letter-spacing:0;}
+  .kpi .t{margin:10px 0 0; font-size:.9rem;}
+  .kpi .t em{font-style:normal; color:var(--muted); font-size:.82rem; display:block; margin-top:2px;}
 
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 11px 20px; border-radius: 10px;
-    font-size: .93rem; font-weight: 600; text-decoration: none;
-    border: 1px solid transparent; transition: transform .12s ease, opacity .12s ease;
+  /* ───── sections ───── */
+  section{padding:46px 0; border-top:1px solid var(--line);}
+  section:first-of-type{border-top:0;}
+  .sec-head{display:flex; align-items:flex-start; gap:14px; margin-bottom:26px;}
+  .sec-head .idx{
+    flex-shrink:0; width:30px; height:30px; border-radius:9px;
+    background:var(--accent-soft); color:var(--accent);
+    display:grid; place-items:center; font-weight:800; font-size:.9rem;
+    font-variant-numeric:tabular-nums;
   }
-  .btn:active { transform: translateY(1px); }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { opacity: .9; }
-  .btn-ghost { border-color: var(--line); color: var(--fg); background: var(--bg-elev); }
-  .btn-ghost:hover { border-color: var(--fg-muted); }
+  .sec-head h2{margin:0; font-size:1.5rem; letter-spacing:-.025em; font-weight:750; line-height:1.35;}
+  .sec-head p{margin:2px 0 0; color:var(--muted); font-size:.9rem;}
 
-  /* ---- sections ---- */
-  section { padding: 56px 0; border-top: 1px solid var(--line); }
-  h2 {
-    font-size: 1.35rem; letter-spacing: -.02em; margin: 0 0 8px; font-weight: 700;
+  .block{
+    background:var(--elev); border:1px solid var(--line); border-radius:var(--radius);
+    padding:22px 24px; box-shadow:var(--shadow); margin-bottom:16px;
   }
-  .sub { color: var(--fg-muted); margin: 0 0 28px; font-size: .96rem; }
+  .block > h3{
+    margin:0 0 14px; font-size:1.02rem; font-weight:700; letter-spacing:-.015em;
+    display:flex; align-items:center; gap:8px;
+  }
+  .block > h3 .tag{
+    font-size:.68rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+    background:var(--elev2); color:var(--muted); padding:3px 7px; border-radius:5px;
+  }
+  .block > p:last-child, .block > ul:last-child, .block > ol:last-child{margin-bottom:0;}
 
-  .grid {
-    display: grid; gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  ol.rules, ul.rules{margin:0; padding-left:0; list-style:none; counter-reset:r;}
+  ol.rules li{
+    counter-increment:r; position:relative; padding:7px 0 7px 32px;
+    border-bottom:1px dashed var(--line); font-size:.94rem;
   }
-  .card {
-    background: var(--bg-elev);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 22px;
-    box-shadow: var(--shadow);
+  ol.rules li::before{
+    content:counter(r); position:absolute; left:0; top:9px;
+    width:21px; height:21px; border-radius:6px; background:var(--elev2);
+    color:var(--muted); font-size:.72rem; font-weight:700;
+    display:grid; place-items:center; font-variant-numeric:tabular-nums;
   }
-  .card h3 { margin: 0 0 6px; font-size: 1rem; font-weight: 650; letter-spacing: -.01em; }
-  .card p { margin: 0; color: var(--fg-muted); font-size: .92rem; }
-  .card .icon { font-size: 1.5rem; display: block; margin-bottom: 12px; }
+  ul.rules li{
+    position:relative; padding:7px 0 7px 20px;
+    border-bottom:1px dashed var(--line); font-size:.94rem;
+  }
+  ul.rules li::before{
+    content:""; position:absolute; left:5px; top:16px;
+    width:5px; height:5px; border-radius:50%; background:var(--accent);
+  }
+  ol.rules li:last-child, ul.rules li:last-child{border-bottom:0; padding-bottom:0;}
+  .sub-note{display:block; color:var(--muted); font-size:.85rem; margin-top:3px;}
 
-  ul.list { list-style: none; padding: 0; margin: 0; }
-  ul.list li {
-    display: flex; gap: 14px; align-items: baseline;
-    padding: 14px 0; border-bottom: 1px solid var(--line);
+  /* script quotes */
+  .say{
+    background:var(--accent-soft); border-radius:11px; padding:14px 16px; margin:14px 0 0;
+    border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
   }
-  ul.list li:last-child { border-bottom: 0; }
-  ul.list .when {
-    font-variant-numeric: tabular-nums; font-size: .85rem;
-    color: var(--fg-muted); min-width: 92px; flex-shrink: 0;
+  .say .cap{
+    font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700;
+    color:var(--accent); margin:0 0 8px; display:flex; align-items:center; gap:6px;
   }
-  ul.list .what { font-size: .95rem; }
+  .say ul{margin:0; padding:0; list-style:none; display:grid; gap:7px;}
+  .say li{font-size:.92rem; padding-left:16px; position:relative;}
+  .say li::before{content:"“"; position:absolute; left:0; top:1px; color:var(--accent); font-weight:800;}
+  .say li::after{content:"”"; color:var(--accent); font-weight:800;}
 
-  footer {
-    border-top: 1px solid var(--line);
-    padding: 32px 0 48px;
-    color: var(--fg-muted); font-size: .86rem;
-    display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between;
+  /* callouts */
+  .note{
+    border-radius:11px; padding:13px 16px; margin:14px 0 0; font-size:.91rem;
+    background:var(--warn-soft); border:1px solid color-mix(in srgb,var(--warn) 28%,transparent);
   }
-  footer a { color: var(--fg-muted); }
+  .note b{color:var(--warn);}
+  .note.key{background:var(--good-soft); border-color:color-mix(in srgb,var(--good) 28%,transparent);}
+  .note.key b{color:var(--good);}
+
+  /* tables */
+  .tw{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0; border-radius:11px; border:1px solid var(--line);}
+  table{border-collapse:collapse; width:100%; min-width:560px; font-size:.9rem; background:var(--elev);}
+  th,td{padding:11px 14px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line);}
+  thead th{
+    background:var(--elev2); font-size:.75rem; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--muted); font-weight:700; white-space:nowrap; position:sticky; top:0;
+  }
+  tbody tr:last-child td{border-bottom:0;}
+  td.situ{font-weight:650; white-space:nowrap; width:1%;}
+  td.no{color:var(--muted); text-decoration:line-through; text-decoration-color:color-mix(in srgb,var(--bad) 55%,transparent);}
+  td.yes{color:var(--fg);}
+  th.no-h{color:var(--bad);} th.yes-h{color:var(--good);}
+  td.ml, th.ml{min-width:180px;}
+
+  /* do / dont */
+  .dd{display:grid; gap:12px; margin-top:14px;}
+  @media (min-width:620px){.dd{grid-template-columns:1fr 1fr;}}
+  .dd > div{border-radius:11px; padding:13px 15px; font-size:.91rem; border:1px solid;}
+  .dd .o{background:var(--good-soft); border-color:color-mix(in srgb,var(--good) 28%,transparent);}
+  .dd .x{background:var(--bad-soft); border-color:color-mix(in srgb,var(--bad) 28%,transparent);}
+  .dd .h{
+    font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; font-weight:800;
+    margin-bottom:7px; display:block;
+  }
+  .dd .o .h{color:var(--good);} .dd .x .h{color:var(--bad);}
+  .dd p{margin:0 0 6px;} .dd p:last-child{margin:0;}
+
+  /* stat strip */
+  .stats{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); margin-bottom:12px;}
+  .stats div{
+    background:var(--elev2); border-radius:11px; padding:15px; text-align:center;
+  }
+  .stats .v{font-size:1.8rem; font-weight:800; letter-spacing:-.03em; color:var(--accent); line-height:1;}
+  .stats .l{font-size:.82rem; color:var(--muted); margin-top:7px; line-height:1.45;}
+  .src{font-size:.76rem; color:var(--muted); margin:10px 0 0; text-align:right;}
+
+  /* type cards */
+  .types{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:4px;}
+  .types .c{background:var(--elev2); border-radius:11px; padding:16px;}
+  .types .c h4{margin:0 0 6px; font-size:.94rem; font-weight:700;}
+  .types .c p{margin:0; font-size:.87rem; color:var(--muted);}
+  .types .c .say{margin-top:11px; background:var(--elev); border-color:var(--line);}
+  .types .c .say .cap{color:var(--muted);}
+  .types .c .say li::before,.types .c .say li::after{color:var(--muted);}
+
+  /* mtp */
+  .mtp{display:grid; gap:12px; margin-top:4px;}
+  @media (min-width:760px){.mtp{grid-template-columns:repeat(3,1fr);}}
+  .mtp .m{background:var(--elev2); border-radius:11px; padding:17px; border-top:3px solid var(--accent);}
+  .mtp .m .l{font-size:1.55rem; font-weight:800; color:var(--accent); line-height:1; letter-spacing:-.03em;}
+  .mtp .m h4{margin:8px 0 8px; font-size:.95rem; font-weight:700;}
+  .mtp .m ul{margin:0; padding-left:15px; font-size:.87rem; color:var(--muted); display:grid; gap:5px;}
+
+  /* steps */
+  .steps{display:grid; gap:10px; counter-reset:s; margin-top:4px;}
+  .steps .s{
+    display:flex; gap:14px; background:var(--elev2); border-radius:11px; padding:14px 16px;
+    counter-increment:s;
+  }
+  .steps .s::before{
+    content:counter(s); flex-shrink:0; width:24px; height:24px; border-radius:50%;
+    background:var(--accent); color:#fff; font-size:.78rem; font-weight:800;
+    display:grid; place-items:center;
+  }
+  .steps .s h4{margin:0 0 3px; font-size:.94rem; font-weight:700;}
+  .steps .s p{margin:0; font-size:.87rem; color:var(--muted);}
+
+  mark{background:color-mix(in srgb,var(--accent) 32%,transparent); color:inherit; border-radius:3px; padding:0 2px;}
+  .hidden{display:none !important;}
+  #empty{
+    display:none; text-align:center; color:var(--muted); padding:70px 20px; font-size:.94rem;
+  }
+  #empty.show{display:block;}
+
+  footer{
+    border-top:1px solid var(--line); margin-top:20px; padding:28px 0 52px;
+    color:var(--muted); font-size:.84rem;
+    display:flex; flex-wrap:wrap; gap:6px 20px; justify-content:space-between;
+  }
+
+  .top{
+    position:fixed; right:20px; bottom:20px; z-index:40;
+    width:42px; height:42px; border-radius:50%; border:1px solid var(--line);
+    background:var(--elev); color:var(--fg); box-shadow:var(--shadow);
+    cursor:pointer; font-size:1rem; display:none; place-items:center;
+  }
+  .top.show{display:grid;}
+
+  @media print{
+    header,.toc,.top,.search,footer{display:none !important;}
+    body{background:#fff; color:#000; font-size:10.5pt;}
+    .shell{display:block; max-width:none; padding:0;}
+    .block,.tw{box-shadow:none; break-inside:avoid; page-break-inside:avoid;}
+    section{break-before:page; page-break-before:always; border:0;}
+    section:first-of-type{break-before:auto; page-break-before:auto;}
+    .hidden{display:revert !important;}
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="wrap bar">
-    <div class="brand"><span class="dot"></span> desk</div>
-    <nav>
-      <a href="#work">Work</a>
-      <a href="#log">Log</a>
-      <a href="#contact">Contact</a>
-    </nav>
+  <div class="bar">
+    <div class="brand">
+      <span class="mark">닥터</span>
+      <span>닥터배치과<small>데스크 응대 매뉴얼</small></span>
+    </div>
+    <div class="search" id="searchWrap">
+      <span class="ico">🔍</span>
+      <input id="q" type="search" placeholder="매뉴얼 검색 (예: BA, 대기시간, 불만)" autocomplete="off" aria-label="매뉴얼 검색">
+      <button class="clr" id="clr" aria-label="검색어 지우기">×</button>
+    </div>
   </div>
 </header>
 
-<main class="wrap">
+<div class="shell">
 
-  <div class="hero">
-    <p class="eyebrow">Welcome</p>
-    <h1>책상 위에서<br>시작되는 것들</h1>
-    <p class="lede">
-      만들고 있는 것, 기록해 두는 것, 그리고 다음에 할 것.
-      복잡한 도구 없이 HTML 한 장으로 굴러가는 개인 홈페이지입니다.
-    </p>
-    <div class="actions">
-      <a class="btn btn-primary" href="#work">둘러보기</a>
-      <a class="btn btn-ghost" href="#contact">연락하기</a>
+  <aside class="toc">
+    <div class="label">Contents</div>
+    <ol>
+      <li><a href="#s1"><span class="n">01</span> 전화 응대</a></li>
+      <li><a href="#s2"><span class="n">02</span> 접수 응대</a></li>
+      <li><a href="#s3"><span class="n">03</span> 치료 후 응대</a></li>
+      <li><a href="#s4"><span class="n">04</span> 예약</a></li>
+      <li><a href="#s5"><span class="n">05</span> 불만 환자 응대</a></li>
+    </ol>
+  </aside>
+
+  <main>
+
+    <div class="hero">
+      <p class="eyebrow">Front Desk Manual</p>
+      <h1>환자가 처음 만나는 사람은<br>진료실이 아니라 데스크입니다</h1>
+      <p class="lede">
+        전화 한 통, 첫인사 한 마디, 대기 중 건네는 말 한 마디가 병원의 인상을 결정합니다.
+        데스크에서 매일 마주치는 상황별 응대 기준을 정리했습니다.
+      </p>
     </div>
-  </div>
 
-  <section id="work">
-    <h2>Work</h2>
-    <p class="sub">지금 손대고 있는 것들.</p>
-    <div class="grid">
-      <div class="card">
-        <span class="icon">🛠️</span>
-        <h3>Projects</h3>
-        <p>작업 중인 프로젝트와 실험을 모아 두는 자리입니다.</p>
+    <section id="s1">
+      <div class="sec-head">
+        <span class="idx">1</span>
+        <div>
+          <h2>전화 응대</h2>
+          <p>얼굴이 보이지 않기에, 목소리가 병원의 표정이 됩니다.</p>
+        </div>
       </div>
-      <div class="card">
-        <span class="icon">📚</span>
-        <h3>Notes</h3>
-        <p>읽고 배운 것을 짧게 정리해 두는 노트입니다.</p>
+
+      <div class="block">
+        <h3>전화응대 3 : 3 : 3 기법</h3>
+        <div class="kpi">
+          <div class="k">
+            <div class="num">3<span>회</span></div>
+            <p class="t">벨이 3번 울리기 전에 받는다<em>신속한 응답이 첫인상</em></p>
+          </div>
+          <div class="k">
+            <div class="num">3<span>분</span></div>
+            <p class="t">3분 안에 통화를 마친다<em>컴플레인 통화는 예외</em></p>
+          </div>
+          <div class="k">
+            <div class="num">3<span>초</span></div>
+            <p class="t">고객이 끊은 후 3초 뒤 수화기를 놓는다<em>끝인사도 응대의 일부</em></p>
+          </div>
+        </div>
       </div>
-      <div class="card">
-        <span class="icon">🌱</span>
-        <h3>Now</h3>
-        <p>요즘 집중하고 있는 한두 가지를 적어 둡니다.</p>
+
+      <div class="block">
+        <h3>전화응대 10대 원칙</h3>
+        <ol class="rules">
+          <li>메모할 수 있도록 메모지와 필기도구를 항상 전화 옆에 둔다.</li>
+          <li>전화벨이 3번 울리기 전 신속히 전화를 받는다.</li>
+          <li>밝은 표정과 음성으로 응대한다.<span class="sub-note">“반갑습니다. 닥터배치과입니다.”</span></li>
+          <li>상대방의 말을 끝까지 경청한다.</li>
+          <li>전문 용어는 가급적 사용하지 않는다.</li>
+          <li>환자 문의 시 질문 내용을 정리하여 말해주고 맞는지 확인한다.</li>
+          <li>환자 문의 시 신속 · 정확 · 간단 · 명료하게 전달한다.</li>
+          <li>빠른 안내를 위해 약도, 진료 시간 등 병원 정보를 숙지하여 설명한다.<span class="sub-note">병원 주변에서 찾지 못할 경우 현재 위치를 여쭤보고 착오가 없도록 한다.</span></li>
+          <li>전화를 받을 때나 끊을 때 먼저 인사한다.</li>
+          <li>상대가 먼저 전화를 끊은 것을 확인한 후 전화를 끊는다.</li>
+        </ol>
       </div>
-    </div>
-  </section>
 
-  <section id="log">
-    <h2>Log</h2>
-    <p class="sub">최근 업데이트.</p>
-    <ul class="list">
-      <li><span class="when">2026-07-28</span><span class="what">desk 홈페이지 첫 공개 — 정적 HTML 한 장으로 시작</span></li>
-      <li><span class="when">soon</span><span class="what">프로젝트 목록 채우기</span></li>
-      <li><span class="when">soon</span><span class="what">글 아카이브 페이지 추가</span></li>
-    </ul>
-  </section>
+      <div class="block">
+        <h3>환자 응대 도중 전화가 올 경우</h3>
+        <div class="steps">
+          <div class="s"><div><h4>양해 구하기</h4><p>“잠시 실례하겠습니다” 하고 자리에서 일어난다.</p></div></div>
+          <div class="s"><div><h4>전화 응대</h4><p>일어선 상태로 전화를 응대한다.</p></div></div>
+          <div class="s"><div><h4>감사 인사 후 재개</h4><p>“양해해주셔서 감사합니다” 하고 접수를 진행한다.</p></div></div>
+        </div>
+      </div>
 
-  <section id="contact">
-    <h2>Contact</h2>
-    <p class="sub">편하게 연락 주세요.</p>
-    <div class="actions">
-      <a class="btn btn-ghost" href="mailto:pnuperioclinic@gmail.com">✉️ Email</a>
-      <a class="btn btn-ghost" href="https://github.com/pnuperioclinic-sys">GitHub</a>
-    </div>
-  </section>
+      <div class="block">
+        <h3>전화 예약</h3>
+        <ol class="rules">
+          <li>현재 예약현황을 확인하여 30분 간격으로 예약을 잡는다.</li>
+          <li>단순 검진, 당일 치료 등 내원 이유를 파악한다.</li>
+          <li>경우에 따라 적절하게 배분하여 예약 및 대기시간에 지장이 없도록 한다.</li>
+        </ol>
+      </div>
 
-</main>
+      <div class="block">
+        <h3>상황별 올바른 표현 <span class="tag">NO → YES</span></h3>
+        <div class="tw">
+          <table>
+            <thead>
+              <tr><th>상황</th><th class="no-h ml">NO</th><th class="yes-h ml">YES</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="situ">전화를 받을 때</td>
+                <td class="no">여보세요?<br>네~<br>네 말씀하세요</td>
+                <td class="yes">네, ○○치과 ○○○입니다.<br>무엇을 도와드릴까요?</td>
+              </tr>
+              <tr>
+                <td class="situ">인사를 받을 때</td>
+                <td class="no">네<br>네 말씀하세요</td>
+                <td class="yes">네, 안녕하십니까?<br>무엇을 도와드릴까요?</td>
+              </tr>
+              <tr>
+                <td class="situ">목소리가 들리지 않을 때</td>
+                <td class="no">네<br>여보세요, 여보세요?</td>
+                <td class="yes">전화기 수신상태가 좋지 않은 것 같습니다. 죄송합니다만 다시 한번 전화 주시겠어요?</td>
+              </tr>
+              <tr>
+                <td class="situ">이름을 물을 때</td>
+                <td class="no">성함은요?</td>
+                <td class="yes">성함을 여쭈어봐도 될까요?</td>
+              </tr>
+              <tr>
+                <td class="situ">경청 · 대답할 때</td>
+                <td class="no">네</td>
+                <td class="yes">네~ 잘 알겠습니다.</td>
+              </tr>
+              <tr>
+                <td class="situ">다른 곳으로 연결할 때</td>
+                <td class="no">돌려드리겠습니다</td>
+                <td class="yes">네, 연결해드리겠습니다. 먼저 끊어지면 ○○○로 다시 한번 전화 주시겠습니까? 감사합니다.</td>
+              </tr>
+              <tr>
+                <td class="situ">전화를 넘겨받았을 때</td>
+                <td class="no">네 전화 바꾸었습니다<br>여보세요~</td>
+                <td class="yes">안녕하십니까? ○○○입니다.</td>
+              </tr>
+              <tr>
+                <td class="situ">지명인 통화가 오래 걸릴 때</td>
+                <td class="no">인내심을 갖고 마냥 기다리게 한다</td>
+                <td class="yes">상황을 설명 후, 연락처를 주시면 통화가 끝나는 대로 바로 전해드리겠습니다.</td>
+              </tr>
+              <tr>
+                <td class="situ">지명인이 부재중일 때</td>
+                <td class="no">없습니다 / 어디 갔는지 모르겠는데요<br>화장실 가셨는데요<br>지금 자리에 안 계세요</td>
+                <td class="yes">죄송합니다만 지금 외근 중(회의 중)이십니다. 전하실 말씀이 있으시면 말씀해 주시겠습니까?<br>(저는 ○○○이었습니다.)</td>
+              </tr>
+              <tr>
+                <td class="situ">잘못 걸려온 전화</td>
+                <td class="no">그냥 끊는다<br>전화 잘못하셨습니다</td>
+                <td class="yes">네, 여기는 ○○○입니다. 전화가 잘못 걸린 것 같습니다. 감사합니다, 좋은 하루 되십시오.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-<footer class="wrap">
-  <span>© 2026 desk</span>
-  <span>Built with plain HTML &amp; CSS</span>
-</footer>
+    <section id="s2">
+      <div class="sec-head">
+        <span class="idx">2</span>
+        <div>
+          <h2>접수 응대</h2>
+          <p>문을 열고 들어온 3초 안에 병원의 인상이 결정됩니다.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>접수자의 태도</h3>
+        <ol class="rules">
+          <li>환자 내원 시, 자리에서 일어나서 응대한다.</li>
+          <li>업무 중 고객이 내원하면 하던 단순업무를 중단하고 즉시 일어서서 응대한다.</li>
+          <li>밝은 표정과 웃는 얼굴로 예의 바르게 응대한다.</li>
+          <li>고객의 정면에서 눈높이를 맞추어 응대한다.</li>
+          <li>노약자의 경우 먼저 의자에 앉도록 안내하고 눈높이를 맞추어 응대한다.</li>
+          <li>환자를 기다리게 하는 경우, 예상 소요 시간 및 사정을 말하여 양해를 구한다.</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <h3>접수 vs 수납 — 응대 타이밍이 다릅니다</h3>
+        <div class="dd">
+          <div class="o">
+            <span class="h">접수</span>
+            <p>환자가 머뭇거리지 않도록 <b>먼저</b> 응대한다.</p>
+            <p>“접수 도와드리겠습니다.”</p>
+          </div>
+          <div class="x" style="background:var(--elev2); border-color:var(--line);">
+            <span class="h" style="color:var(--muted)">수납</span>
+            <p>환자가 데스크 앞에 <b>완전히 멈춰서면</b> 응대한다.</p>
+          </div>
+        </div>
+        <div class="note"><b>주의</b> · 환자를 데스크 앞에 오래 세워두지 않는다.</div>
+      </div>
+
+      <div class="block">
+        <h3>신환 응대 — 유형별</h3>
+        <div class="types">
+          <div class="c">
+            <h4>예약 환자</h4>
+            <p>미리 연락받은 내용을 확인하고, 환자의 상황을 알고 기다리고 있었다는 느낌을 준다.</p>
+            <div class="say"><p class="cap">응대 예</p><ul>
+              <li>어서오세요. 그렇지 않아도 기다리고 있었습니다</li>
+              <li>병원 찾는 데 어렵지는 않으셨나요?</li>
+            </ul></div>
+          </div>
+          <div class="c">
+            <h4>소개 환자</h4>
+            <p>소개해 준 기존 환자와의 친분을 공유하여 신환과의 연결고리를 만든다.</p>
+            <div class="say"><p class="cap">응대 예</p><ul>
+              <li>네, ○○○님의 소개를 받으셨군요. 이렇게 저희 병원을 좋게 말씀해주시다니 나중에 감사드려야겠어요. ○○○님의 소개시라니 더욱 신경 써서 잘해드리겠습니다</li>
+              <li>소개해 주신 ○○님 통해서 말씀 많이 들었습니다</li>
+            </ul></div>
+          </div>
+          <div class="c">
+            <h4>무연고 환자</h4>
+            <p>내원 경로를 파악하고, 병원에 대한 관심에 감사를 표한다.</p>
+            <div class="say"><p class="cap">응대 예</p><ul>
+              <li>처음 방문해주시는군요. 감사합니다</li>
+            </ul></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>환자 증상 먼저 묻기 <span class="tag">C.C 확인</span></h3>
+        <p style="margin:0; font-size:.94rem;">
+          환자의 고통과 불편에 공감하여 친밀감을 형성하고, 병원에서의 치료를 통해 고통이 경감됨은 물론
+          건강한 치아를 가질 수 있음을 확신시킨다.
+        </p>
+        <div class="say"><p class="cap">응대 예</p><ul>
+          <li>어디가 언제부터 불편했나요?</li>
+          <li>지금 가장 불편하신 곳이 어딘가요?</li>
+          <li>그동안 많이 힘들었겠군요</li>
+          <li>너무 걱정하실 필요 없습니다</li>
+          <li>담당 선생님이 아프지 않게 치료해주실 거예요</li>
+        </ul></div>
+      </div>
+
+      <div class="block">
+        <h3>접수증 작성 안내</h3>
+        <p style="margin:0; font-size:.94rem;">접수증을 환자가 보기 편한 방향으로 돌려서 볼펜과 함께 건넨다.</p>
+        <div class="say"><p class="cap">응대 예</p><ul>
+          <li>번거로우시겠지만 표시된 항목에 간단한 작성 부탁드립니다</li>
+        </ul></div>
+      </div>
+
+      <div class="block">
+        <h3>대기시간 안내</h3>
+        <p style="margin:0; font-size:.94rem;">대기시간이 필요한 경우 예상 시간을 환자에게 미리 설명한다.</p>
+        <div class="say"><p class="cap">응대 예</p><ul>
+          <li>지금 먼저 오신 환자가 두 분 있습니다. 15분 정도 기다리셔야 할 것 같은데 괜찮으시겠어요?</li>
+          <li>10분 정도 기다리셔야 하는데, 호명될 때까지 대기실에서 잠시만 기다려 주시겠어요?</li>
+        </ul></div>
+      </div>
+
+      <div class="block">
+        <h3>대기 응대 태도</h3>
+        <ol class="rules">
+          <li>환자가 기다리는 것에 대한 미안함을 전한다.</li>
+          <li>진료 후 환자의 다음 약속 시간, 대기 가능 시간 등을 확인하여 다음 약속까지 헤아려 응대한다.</li>
+          <li>혼자 있도록 내버려두지 말고 지속적이고 주기적으로 관심을 보인다.</li>
+          <li>차나 음료를 권하거나 직접 대접한다.</li>
+          <li>대기시간을 최대한 유익하게 활용할 수 있도록 배려한다.</li>
+        </ol>
+        <div class="note key"><b>도서 · 잡지 · 진료 안내서 활용</b><br>
+          ① 병원에 비치된 도서 및 잡지를 활용할 수 있도록 안내한다.<br>
+          ② 병원소개 브로셔 등 홍보물을 제공하여 병원에 대한 다양한 정보를 준다.<br>
+          ③ 진료 안내서를 통해 치료 내용과 주의사항을 미리 숙지하도록 한다.
+        </div>
+      </div>
+    </section>
+
+    <section id="s3">
+      <div class="sec-head">
+        <span class="idx">3</span>
+        <div>
+          <h2>치료 후 응대</h2>
+          <p>마지막 1분이 다음 내원을 결정합니다.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>치료 종료 3단계</h3>
+        <div class="steps">
+          <div class="s"><div>
+            <h4>종료 안내 및 결과 상태 확인</h4>
+            <p>치료가 종료되었음을 알리고, 환자의 결과 상태를 <b>반드시</b> 확인한다.</p>
+          </div></div>
+          <div class="s"><div>
+            <h4>치료 내용 · 결과 재확인</h4>
+            <p>오늘 진행한 치료 내용과 결과를 다시 한 번 알려준다.</p>
+          </div></div>
+          <div class="s"><div>
+            <h4>주의사항 및 치료 계획 설명</h4>
+            <p>치료 후 주의사항을 설명하고(가급적 주의사항이 적힌 문서 제공), 앞으로의 치료 계획을 알려준다.</p>
+          </div></div>
+        </div>
+        <div class="say"><p class="cap">응대 예</p><ul>
+          <li>오늘 치료가 모두 끝났습니다. 좀 어떤가요? 치료받는다고 고생 많으셨어요</li>
+          <li>다음에는 오른쪽 아래쪽에 신경치료가 계획되어 있네요</li>
+        </ul></div>
+      </div>
+
+      <div class="block">
+        <h3>치료비에 의문이 있는 경우</h3>
+        <ol class="rules">
+          <li>환자에게 진료내역을 확인시키고 종목별 수가를 알려준다.</li>
+          <li>지난번 치료비와 차이가 있다고 하는 경우 차트를 보이고 확인시킨다.</li>
+          <li>치료비에 대한 의혹이 있는 경우 <b>반드시 해결하고 난 후</b> 환자를 돌려보낸다.</li>
+          <li>원칙적으로 외상은 안 되지만, 부득이한 경우 은행 입금을 하도록 한다.</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <h3>기억할 부분</h3>
+        <ol class="rules">
+          <li>접수 환자와 수납 환자가 동시에 몰릴 경우 <b>수납 환자를 먼저</b> 처리한다.</li>
+          <li>모든 환자가 치료비에 민감하다는 것을 기억한다.</li>
+          <li>싼 진료를 했다고 무시하는 태도는 금물이다.</li>
+          <li>한 번 결제 시 정확하게 결제한다.</li>
+          <li>영수증 발급을 원할 시 신속하게 발급한다.</li>
+          <li>Sedation 환자 또는 많이 울고 간 환자에게는 <b>안부전화(Happy Call)</b>를 시행한다.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="s4">
+      <div class="sec-head">
+        <span class="idx">4</span>
+        <div>
+          <h2>예약</h2>
+          <p>비워둔 시간은 그 환자만을 위한 것임을 인식시킵니다.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>효율적인 예약 관리</h3>
+        <ol class="rules">
+          <li>예약 순서는 가급적 철저히 지킨다.</li>
+          <li>환자에게 예약 시간의 중요성을 인식시킨다.
+            <span class="sub-note">“내가 안 가면 다른 사람이라도 치료하고 있겠지”라는 생각이 들지 않도록, 환자분을 위해 비워둔 시간임을 인지시킨다.</span></li>
+          <li>치료 약속은 다음 치료 일정과 너무 차이가 나서 느슨해지지 않게 잡는다.</li>
+          <li>신환 약속은 가급적 빨리 처리해준다.</li>
+          <li>예약장부는 가급적 보여주지 않도록 한다.</li>
+          <li>약속은 <b>2개 중에서 선택</b>하도록 한다.
+            <span class="sub-note">약속노트를 펼쳐 “이 중에서 아무 때나 오시라”는 식의 태도를 취하지 않는다.</span></li>
+          <li>병원에서 의료진이 예약시간을 지키는 것이 무엇보다 중요하다.
+            <span class="sub-note">도착 후 적어도 10분 내 진료실로 들어갈 수 있게 하고, 예약시간을 지켰을 경우 제시간에 치료를 받고 지키지 않을 경우 기다려야 함을 명확히 한다.</span></li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <h3>예약 시 응대</h3>
+        <p style="margin:0; font-size:.94rem;">예약 시간을 재차 확인하여 환자가 잊지 않도록 한다.</p>
+        <div class="say"><p class="cap">응대 예</p><ul>
+          <li>○○주(일) 후에 나오셔야겠습니다</li>
+          <li>시간은 언제가 좋으세요?</li>
+          <li>○○○님, ○월 ○일 ○시에 약속되었습니다</li>
+          <li>그럼 일주일 후에 뵙겠습니다. 안녕히 가세요</li>
+        </ul></div>
+        <ul class="rules" style="margin-top:14px;">
+          <li>환자가 많아 붐비는 시간대, 정밀검사를 받기 좋은 한가한 시간대 등 예약 시간에 대한 자세한 정보를 제공한다.</li>
+          <li>환자의 라이프스타일을 고려해 예약 일시를 제안한다.<span class="sub-note">아이의 낮잠시간, 어린 자녀의 하교 시간 등을 고려한다.</span></li>
+        </ul>
+        <div class="note"><b>예약 환자 지체</b> · 예약 시간 5분 경과 시 보호자에게 전화하여 예약 시간을 확인할 것.</div>
+        <div class="note key"><b>익일 예약환자 확인 콜</b> · 이른 오전 시간을 피해서 전화하여 예약 현황 및 시간을 공지해드릴 것.</div>
+      </div>
+
+      <div class="block">
+        <h3>BA / CA 응대 <span class="tag">차트에 기록</span></h3>
+        <div class="dd">
+          <div class="x">
+            <span class="h">BA — Broken Appointment</span>
+            <p>연락 없이 일방적으로 약속을 깨는 것</p>
+          </div>
+          <div class="o" style="background:var(--warn-soft); border-color:color-mix(in srgb,var(--warn) 28%,transparent);">
+            <span class="h" style="color:var(--warn)">CA — Cancelled Appointment</span>
+            <p>연락하여 약속을 취소하는 것</p>
+          </div>
+        </div>
+
+        <h3 style="margin:22px 0 12px;">① 약속의 중요성 인식시키기</h3>
+        <ul class="rules">
+          <li>어떤 환자도 다음 약속 없이 그냥 가지 않도록 한다. (n 없는 경우는 예외)</li>
+          <li>신환의 경우 다음 약속을 정할 때 약속의 중요성을 잘 설명한다.</li>
+          <li>약속 취소 시 부드러우면서 동시에 실망감을 표시한다.</li>
+        </ul>
+        <div class="say"><p class="cap">응대 예</p><ul>
+          <li>예, 정말 안타깝군요. 약속을 잘 지키시는 분이라 저희도 걱정하지 않았었습니다</li>
+        </ul></div>
+
+        <h3 style="margin:22px 0 12px;">② 약속을 지키도록 유도</h3>
+        <p style="margin:0; font-size:.94rem;">환자가 약속을 지키지 못하는 문제의 해결책을 예의 바르게 제시한다.</p>
+        <div class="say"><p class="cap">응대 예</p><ul>
+          <li>마침 오늘 ○시에 빈 타임이 있는데 혹시 그 시간에라도 오실 수 없을까요?</li>
+        </ul></div>
+
+        <h3 style="margin:22px 0 12px;">③ 예약 시간 및 기간 조절을 통한 대응</h3>
+        <ul class="rules">
+          <li>BA · CA의 이유가 합당치 않다고 판단될 때는 다음 약속을 어렵게 만든다.
+            <span class="sub-note">많은 환자가 원하는 시간대(하교 · 하원 타임, 토요일)를 제외하고 시간을 잡아준다.</span></li>
+          <li>습관성 BA · CA 환자는 이중예약을 할 수 있다. 예약 시간에 동시에 방문한 경우 치료의 일부만 시행한다.
+            <span class="sub-note">이때 BA · CA에 대한 이야기는 꺼내지 않는다.</span></li>
+        </ul>
+        <div class="dd">
+          <div class="o">
+            <span class="h">O — 이렇게</span>
+            <p>“이거 어쩌죠? 그러시면 약속이 2주 후에나 가능하실 것 같습니다.”</p>
+          </div>
+          <div class="x">
+            <span class="h">X — 이렇게는 금지</span>
+            <p>“사실, 또 못 오실까 봐 다른 분도 동시에 예약을 잡아 놓았습니다.”</p>
+            <p>“저희가 오죽하면 그랬겠습니까?”</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="s5">
+      <div class="sec-head">
+        <span class="idx">5</span>
+        <div>
+          <h2>불만 환자 응대</h2>
+          <p>불만을 말해주는 환자는 떠나지 않은 환자입니다.</p>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>불만 고객의 특성</h3>
+        <div class="stats">
+          <div><div class="v">96%</div><div class="l">불만족한 소비자는<br>절대 불만을 말하지 않는다</div></div>
+          <div><div class="v">90%</div><div class="l">불만을 경험한 소비자는<br>거래를 중단한다</div></div>
+          <div><div class="v">9명</div><div class="l">불만을 경험한 소비자가<br>불만을 이야기하는 사람 수</div></div>
+          <div><div class="v">90%</div><div class="l">신속히 해결되면<br>다시 그곳을 찾는다</div></div>
+        </div>
+        <p class="src">출처 : TARP (Technical Assistance Research Program), 1991</p>
+        <div class="note key"><b>불만 환자를 통한 긍정적 효과</b><br>
+          ① 불만 환자를 통한 병원 체크의 기회<br>
+          ② 문제점 인식을 기반으로 한 서비스 창조의 기회<br>
+          ③ 단골고객으로의 전환을 통해 병원 수익성 향상
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>환자 불만의 원인</h3>
+        <ol class="rules">
+          <li>진료에 대한 설명이 충분치 않을 때</li>
+          <li>다른 고객과 차별대우할 때</li>
+          <li>진료 예약 시간보다 진료가 늦어질 때</li>
+          <li>안내와 응대가 느릴 때</li>
+          <li>병원 내부가 지저분하여 청결하지 못할 때</li>
+          <li>원장과 직원이 불친절할 때</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <h3>화가 난 환자 응대하기</h3>
+        <ol class="rules">
+          <li>환자가 화를 내고 과격한 행동을 하더라도 겁먹지 말고 차분히 응대한다.</li>
+          <li>화가 난 환자를 대기실에 오래 머무르게 하지 말고, 상담실 또는 원장실로 안내하여 차를 대접한다.</li>
+          <li>어느 정도 안정을 취한 후 원장과 대화할 수 있도록 하되 너무 많은 시간을 지체하지 않는다.</li>
+          <li>목소리 톤을 낮춰 무게를 주면서 가능한 천천히, 그리고 단호하게 응대한다.</li>
+          <li>병원의 규정을 설명하거나 환자에게 이해시키려 하지 않는다.</li>
+          <li>환자가 매우 화가 나 있다는 것을 응대자가 알고 있음을 표시한다.</li>
+          <li>적극적으로 문제해결을 할 것임을 환자에게 확신시킨다.</li>
+        </ol>
+        <div class="dd">
+          <div class="x">
+            <span class="h">X — 환자를 자극하는 말</span>
+            <p>“잘 모르겠습니다”</p>
+            <p>“저는 담당이 아닙니다”</p>
+            <p>“다른 사람은 아무 말 안 하던데 왜 환자분만 그러세요”</p>
+          </div>
+          <div class="o">
+            <span class="h">O — 응대 태도 4원칙</span>
+            <p>① 환자 입장에서 성의 있는 태도로 임한다 — 겸손하게 끝까지 경청하고, 동의해가며 긍정적으로 듣는다</p>
+            <p>② 솔직하게 사과드린다 — 사실대로 설명하고, 해명 · 변명 · 회피하지 않는다</p>
+            <p>③ 신속하게 문제를 해결한다 — 다른 환자에게 불편을 끼치지 않도록</p>
+            <p>④ 불만 환자를 충성 환자로 만든다 — 잘 처리하여 병원 이미지를 향상시킨다</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>불만처리 — MTP 기법</h3>
+        <div class="mtp">
+          <div class="m">
+            <div class="l">M</div>
+            <h4>Man — 응대자 바꾸기</h4>
+            <ul>
+              <li>담당 직원 → 책임자</li>
+              <li>코디네이터 → 실장 또는 원장</li>
+              <li>되도록 상급자로 응대자를 바꿔 응대하게 한다</li>
+            </ul>
+          </div>
+          <div class="m">
+            <div class="l">T</div>
+            <h4>Time — 시간 바꾸기</h4>
+            <ul>
+              <li>환자가 진정할 때까지 기다린다</li>
+              <li>처음에는 대꾸하지 않고 잠잠히 듣는다</li>
+              <li>중간중간 진행 상황을 보고한다</li>
+            </ul>
+          </div>
+          <div class="m">
+            <div class="l">P</div>
+            <h4>Place — 장소 바꿔주기</h4>
+            <ul>
+              <li>“죄송하지만, 상담실에 가셔서 말씀해 주시겠습니까?”</li>
+              <li>조용한 장소에서 따뜻한 음료를 대접해 생각할 시간을 갖게 한다</li>
+              <li>서 있을 때는 편안한 의자로 안내해 앉도록 한다</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note"><b>필수</b> · 환자가 Complaint 한 내용은 <b>반드시 기록을 남기고 전달</b>하여 모든 Staff가 알아야 한다.</div>
+      </div>
+    </section>
+
+    <div id="empty">검색 결과가 없습니다.</div>
+
+    <footer>
+      <span>© 2026 닥터배치과 · 데스크 응대 매뉴얼</span>
+      <span>내부 교육용 자료</span>
+    </footer>
+
+  </main>
+</div>
+
+<button class="top" id="top" aria-label="맨 위로">↑</button>
+
+<script>
+(function () {
+  /* ---------- scroll spy ---------- */
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+
+  function spy() {
+    var pos = window.scrollY + 120, current = 0;
+    sections.forEach(function (s, i) { if (s && s.offsetTop <= pos) current = i; });
+    links.forEach(function (a, i) { a.classList.toggle('active', i === current); });
+  }
+
+  /* ---------- back to top ---------- */
+  var topBtn = document.getElementById('top');
+  topBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(function () {
+      spy();
+      topBtn.classList.toggle('show', window.scrollY > 500);
+      ticking = false;
+    });
+  }, { passive: true });
+  spy();
+
+  /* ---------- search ---------- */
+  var input = document.getElementById('q');
+  var wrap = document.getElementById('searchWrap');
+  var clear = document.getElementById('clr');
+  var empty = document.getElementById('empty');
+  var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section'));
+  var hero = document.querySelector('.hero');
+
+  // cache original markup so highlighting is always applied to a clean copy
+  var originals = blocks.map(function (b) { return b.innerHTML; });
+
+  function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  function highlight(node, re) {
+    var walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null);
+    var texts = [], n;
+    while ((n = walker.nextNode())) texts.push(n);
+    texts.forEach(function (t) {
+      if (!re.test(t.nodeValue)) return;
+      re.lastIndex = 0;
+      var frag = document.createDocumentFragment();
+      var last = 0, m;
+      while ((m = re.exec(t.nodeValue)) !== null) {
+        frag.appendChild(document.createTextNode(t.nodeValue.slice(last, m.index)));
+        var mk = document.createElement('mark');
+        mk.textContent = m[0];
+        frag.appendChild(mk);
+        last = m.index + m[0].length;
+        if (m[0].length === 0) re.lastIndex++;
+      }
+      frag.appendChild(document.createTextNode(t.nodeValue.slice(last)));
+      t.parentNode.replaceChild(frag, t);
+    });
+  }
+
+  function run() {
+    var q = input.value.trim();
+    wrap.classList.toggle('has-q', q.length > 0);
+
+    // always restore clean markup first
+    blocks.forEach(function (b, i) { b.innerHTML = originals[i]; b.classList.remove('hidden'); });
+    secs.forEach(function (s) { s.classList.remove('hidden'); });
+    empty.classList.remove('show');
+    hero.classList.remove('hidden');
+
+    if (!q) { spy(); return; }
+
+    hero.classList.add('hidden');
+    var needle = q.toLowerCase();
+    var hits = 0;
+
+    blocks.forEach(function (b) {
+      if (b.textContent.toLowerCase().indexOf(needle) === -1) {
+        b.classList.add('hidden');
+      } else {
+        hits++;
+        highlight(b, new RegExp(escapeRe(q), 'gi'));
+      }
+    });
+
+    secs.forEach(function (s) {
+      var visible = s.querySelector('.block:not(.hidden)');
+      s.classList.toggle('hidden', !visible);
+    });
+
+    empty.classList.toggle('show', hits === 0);
+  }
+
+  input.addEventListener('input', run);
+  clear.addEventListener('click', function () { input.value = ''; run(); input.focus(); });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { input.value = ''; run(); }
+  });
+
+  // "/" focuses search
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== input) {
+      e.preventDefault();
+      input.focus();
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
