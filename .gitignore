@@ -1,0 +1,10 @@
+# OMC runtime state
+.omc/
+!.omc/skills/
+
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
